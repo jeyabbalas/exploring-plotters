@@ -25,15 +25,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 2. Setup a drawing area (layout).
     let root = BitMapBackend::new("./plots/scatter.png", (1024, 768)).into_drawing_area();
     root.fill(&WHITE)?;
-    let root = root.margin(60, 0, 0, 60);
+    let root = root.margin(60, 10, 10, 60);
 
     // 3. Create a Chart Context.
     let mut chart = ChartBuilder::on(&root)
-        .set_label_area_size(LabelAreaPosition::Left, 60.0)
+        .set_label_area_size(LabelAreaPosition::Left, 80.0)
         .set_label_area_size(LabelAreaPosition::Bottom, 60.0)
-        .caption("House Sales in King County", ("sans-serif", 30.0).into_font())
+        .caption("House Sales in King County", ("sans-serif", 30.0))
         .build_cartesian_2d(0.0..8_000.0, 0.0..10_000.0)?;
-    chart.configure_mesh().draw()?;
+    chart
+        .configure_mesh()
+        .y_desc("Price (thousand US dollars)")
+        .x_desc("Interior living space (ft^2)")
+        .axis_desc_style(("sans-serif", 20))
+        .draw()?;
     
     // 4. Draw a data series
     chart.draw_series(price_sqft_living.iter().map(|(price, sqft_living)| Circle::new((*price, *sqft_living), 3.0_f64, RED.mix(0.2).filled())))?;
